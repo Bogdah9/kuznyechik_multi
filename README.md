@@ -9,7 +9,7 @@ import test from 'kuznyechik_multi/test'
 const {default:test} = require('kuznyechik_multi/test')
 
 await test()
-
+```
 
 Пример работоспособности шифра: 
          Ключ 32 байта (HEX)    : 1497515a6be5b8942bfea3f963d351e3256e747b5ed1ea9fc9c804cbcbd8a8a3
@@ -159,7 +159,7 @@ console.log("\tКлюч 32 байта (HEX)                   : "+key.toString('
 console.log("\tШифротекст(HEX)                       :\n\t"+ebuff.toString('hex').replaceAll("\n","\n\t\t"))
 console.log("\tРасшифрованный(UTF-8) ложным ключем   :\n\t"+dbuffErrore.toString('utf8'))
 console.log("\tРасшифрованный(UTF-8)                 :\n\t"+dbuff.toString('utf8').replaceAll("\n","\n\t\t"))
-
+```
         Ключ 32 байта (HEX)                   : 2846dad805295b2e048e024b728dd3ed9bfa4f01de202cea09cda34a63ca7472
         Шифротекст(HEX)                       :
         c5a46d01b8d7ade3f2fb9dbc90ace08cad19b6fe4234cd4949336018d8e2c564ef5ba5a041a92b5a39742f8206e493e0e6593ed1d872395b6090ace98b4727917b7758b39047b6ffaac54add6136d71be0703005cca3a45b7f3ab1914dfe69409405f5359e7b1a1aa1e3924048e220dde12cc363daf1584317dfe153588c140a62cf9ee4ac295920c86b475367f84e81350a6abbaac4913f27ae69442750f7b681f623ea6784a489755fd4982114049ed24e429f0f130f8a75368f79d397bfd7b320bb959acb2fa8ab2cfc459995c21693e9fee2d10474a80b5f361fb67241a55643c660d955ef6e83e49fb992c68e3639d8683fa80ec3e31cc2bbe4eefefc07af3f3b255440d140f9a7a5d4898d0c645e8c2ff86c40cb49504ecda86b54e9a735177971921dfe99718a50b07ce32439dcdfe6012331c1036799ec547e9f7d8efc785b554649aa9fd5ac9f06183f22899147d3342aace1316fe5eee9fa936d9485929496e367e1bb85f9695058507305da3a2351df8862ef49bc714722b078beffeaa7560beb38571530eebe3e419e472cda920cc9fbeb4380ebde7b9b176e21172fde5b75e6455d297de085aadd89a848f95a6bb85cb2ce83ea3fe547187c5e6d89a27152889a720fad831cf347fafd4232737cefb4f075fd4c2676e7c3d02586c3b46dd9595d77bf1935baf81188327f41246091beb598e674b5aacf2707c3
@@ -190,4 +190,3 @@ dl�8�f�6�*T�@OBp;<���;��Ē�E$\�ԥ��g�
                 Как мел, скрипуч и сух,
                 И ловит кошка рыжая
                 Веселых белых мух.
-```
