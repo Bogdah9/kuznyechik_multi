@@ -3,7 +3,7 @@
 Шифрование ГОСТ 34.12-2018 Кузнечик. </br>
 Поддержка ESM/CommonJS/ChildProcess/browser</br>
 Без внешних зависимостей</br>
-##Тест на производительность:</br>
+## Тест на производительность
 ```typescript
 import test from 'kuznyechik_multi/test'
 const {default:test} = require('kuznyechik_multi/test')
@@ -41,14 +41,14 @@ await test()
 Проверка на равенство исходных данных и шифрованных   :  false
 Проверка на равенство исходных данных и дешифрованных :  true
 ```
-##Импроты по умолчанию:</br>
+## Импроты по умолчанию 
 ```typescript
 import {async,sync,multithreading} from 'kuznyechik_multi';
 import kuznyechik_multi from 'kuznyechik_multi';
 const {async,sync,multithreading} = require("kuznyechik_multi");
 const kuznyechik_multi = require("kuznyechik_multi");
 ```
-##Импроты асинхронного кода и реализация:</br>
+## Импроты асинхронного кода и реализация 
 ```typescript
 import { randomBytes } from "node:crypto";
 const {randomBytes} = require("crypto")
@@ -80,7 +80,7 @@ console.log("\tРасшифрованный(UTF-8) ложным ключем   :
     Расшифрованный(UTF-8)                 : Привет мир
     Расшифрованный(UTF-8) ложным ключем   : ֳ¶���   DfEs§��p-↓[9☼��s↕6�3#.J
 
-##Импроты синхронного кода и реализация:</br>
+## Импроты синхронного кода и реализация 
 ```typescript
 import { randomBytes } from "node:crypto";
 const {randomBytes} = require("crypto")
@@ -112,7 +112,7 @@ console.log("\tРасшифрованный(UTF-8) ложным ключем   :
     Расшифрованный(UTF-8)                 : Привет мир
     Расшифрованный(UTF-8) ложным ключем   : ♀�p��f��g��♥a�$�♥�T��yQ!��g�ϧ
 
-##Импроты многопоточного кода и реализация:</br>
+## Импроты многопоточного кода и реализация 
 ```typescript
 import { randomBytes } from "node:crypto";
 const {randomBytes} = require("crypto")
