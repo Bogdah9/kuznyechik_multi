@@ -41,6 +41,23 @@ await test()
     Проверка на равенство исходных данных и шифрованных   :  false
     Проверка на равенство исходных данных и дешифрованных :  true
 ```
+## Браузерная версия kuznyechik_multi/browser
+    Взамен Buffer используется Uint8Array. ECMAScript only
+    Браузерная версия находится в едином модуле по пути ./node_modules/kuznyechik_multi/browser/index.min.js
+    Типы браузерной версии                              ./node_modules/kuznyechik_multi/browser/index.min.d.ts
+```typescript
+declare const _default: {
+    async: {
+        encrypt: (data: Uint8Array, masterkey: string | Uint8Array) => Promise<Uint8Array>;
+        decrypt: (data: Uint8Array, masterkey: string | Uint8Array, trimStart?: boolean) => Promise<Uint8Array>;
+    };
+    sync: {
+        encrypt: (data: Uint8Array, masterkey: string | Uint8Array) => Uint8Array;
+        decrypt: (data: Uint8Array, masterkey: string | Uint8Array, trimStart?: boolean) => Uint8Array;
+    };
+};
+export default _default;
+```
 ## Импроты по умолчанию 
 ```typescript
 import {async,sync,multithreading} from 'kuznyechik_multi';
