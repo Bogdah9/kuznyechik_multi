@@ -7,13 +7,6 @@
   "type": "module",
   "types": "./types.d.ts",
   "homepage": "https://gitverse.ru/bogdah9/kuznyechik_multi",
-  "scripts": {
-    "debug": "npx tsc -w -project tsconfig.json",
-    "dev": "npx tsc -w -project tsconfig.json",
-    "test": "node dist/test.mjs",
-    "build": "rm -rf dist && rm -rf src/browser_js && tsc -project tsconfig.types.json && tsc -project tsconfig.browser.json  && webpack --mode production && tsc -project tsconfig.cjs.json && tsc -project tsconfig.mjs.json  && cp package.json dist/package.json && cp README.md dist/README.md && cp src/browser_js/index.d.mts dist/browser/index.min.d.ts  && rm -rf src/browser_js",
-    "start": "node dist/index.mjs"
-  },
   "exports": {
     ".": {
       "types": "./_types/index.d.mts",
@@ -56,14 +49,5 @@
          "_types/*"
       ]
     }
-  },
-  "devDependencies": {
-    "@purtuga/esm-webpack-plugin": "^1.5.0",
-    "@types/node": "^22.15.3",
-    "terser": "^5.42.0",
-    "ts-loader": "^9.5.2",
-    "typescript": "^5.8.3",
-    "webpack": "^5.99.9",
-    "webpack-cli": "^6.0.1"
   }
 }
