@@ -195,10 +195,10 @@ function countChild(data, MAX_BLOCK) {
     return r > max ? max : r;
 }
 async function CHILD_E_D_METHOD(i, child) {
-    let sizeOf = i * this.BLOCKS_FOR_CHILD;
-    let MAX_SIZE = this.BLOCKS_FOR_CHILD + sizeOf;
+    let sizeOf = i * this.BLOCKS_FOR_CHILD * this.BITES_FROM_CHILD;
+    let MAX_SIZE = this.BLOCKS_FOR_CHILD * this.BITES_FROM_CHILD + sizeOf;
     let END_OF_DATA = this.BITES_FROM_CHILD + 0;
-    let MAX_ITER = Math.ceil((MAX_SIZE - sizeOf) / this.BITES_FROM_CHILD);
+    let MAX_ITER = this.BITES_FROM_CHILD;
     for (let j = 0; j < MAX_ITER; j++) {
         if ((END_OF_DATA + sizeOf) > MAX_SIZE)
             END_OF_DATA = MAX_SIZE - sizeOf;
@@ -225,7 +225,7 @@ function SEARCHER_BITES_FROM_CHILD(size, BITES_FROM_CHILD) {
         return Math.ceil(BITES_FROM_CHILD);
     let i = 1;
     for (; i < 2; i++)
-        if ((size / ((1024 ** i))) === 0)
+        if (Math.floor(size / ((1024 ** i))) === 0)
             break;
     if (i <= 1)
         return 16;
@@ -237,7 +237,7 @@ const encryptChilds = async (data, masterkey, childs, BITES_FROM_CHILD = 0) => {
         console.warn("encryptChilds не был расчитан на данные более 2 гб");
     const MAX_BLOCK = Math.ceil(data.length / 16);
     const C_BITES_FROM_CHILD = SEARCHER_BITES_FROM_CHILD(data.length, BITES_FROM_CHILD);
-    const CHILD_MAX = countChild(childs, Math.ceil(MAX_BLOCK / C_BITES_FROM_CHILD));
+    const CHILD_MAX = countChild(childs, Math.ceil(data.length / C_BITES_FROM_CHILD));
     const BLOCKS_FOR_CHILD = Math.ceil(MAX_BLOCK / CHILD_MAX);
     const MASTER_KEY_BUFF = toBuffer(masterkey);
     const CHILD_PATH = (0, path_1.join)(__dirname, 'child.cjs');
@@ -271,9 +271,11 @@ exports.encryptChilds = encryptChilds;
 const decryptChilds = async (data, masterkey, childs, BITES_FROM_CHILD = 0, trimStart = true) => {
     if (data.length > 2147483647)
         console.warn("decryptChilds не был расчитан на данные более 2 гб");
+    if (!!(data.length % 16))
+        data = Buffer.concat([Buffer.from(Array.from({ length: 16 - data.length % 16 }).map(x => 0)), data]);
     const MAX_BLOCK = Math.ceil(data.length / 16);
     const C_BITES_FROM_CHILD = SEARCHER_BITES_FROM_CHILD(data.length, BITES_FROM_CHILD);
-    const CHILD_MAX = countChild(childs, Math.ceil(MAX_BLOCK / C_BITES_FROM_CHILD));
+    const CHILD_MAX = countChild(childs, Math.ceil(data.length / C_BITES_FROM_CHILD));
     const BLOCKS_FOR_CHILD = Math.ceil(MAX_BLOCK / CHILD_MAX);
     const MASTER_KEY_BUFF = toBuffer(masterkey);
     const CHILD_PATH = (0, path_1.join)(__dirname, 'child.cjs');
