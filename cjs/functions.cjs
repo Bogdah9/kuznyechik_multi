@@ -1,11 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.decryptSync = exports.encryptSync = exports.decryptAsync = exports.encryptAsync = exports.decryptChilds = exports.encryptChilds = exports.FN_TRIM_START = exports.EXPAND_KEYS = exports.FEISTEL_NETWORK = exports.REV_L_TRANSFORM = exports.L_TRANSFORM = exports.REV_S_TRANSFORM = exports.REV_R_TRANSFORM = exports.R_TRANFORM = exports.S_TRANSFORM = exports.GALOIS_MULT = exports.XOR = void 0;
+exports.decryptSync = exports.encryptSync = exports.decryptChilds = exports.encryptChilds = exports.FN_TRIM_START = exports.EXPAND_KEYS = exports.FEISTEL_NETWORK = exports.REV_L_TRANSFORM = exports.L_TRANSFORM = exports.REV_S_TRANSFORM = exports.REV_R_TRANSFORM = exports.R_TRANFORM = exports.S_TRANSFORM = exports.GALOIS_MULT = exports.XOR = void 0;
 exports.toBuffer = toBuffer;
 exports.ROUNDS_10 = ROUNDS_10;
 exports.REV_ROUNDS_10 = REV_ROUNDS_10;
 exports.countChild = countChild;
-exports.SEARCHER_BITES_FROM_CHILD = SEARCHER_BITES_FROM_CHILD;
+exports.encryptAsync = encryptAsync;
+exports.decryptAsync = decryptAsync;
 const os_1 = require("os");
 const constants_cjs_1 = require("./constants.cjs");
 const child_process_1 = require("child_process");
@@ -197,9 +198,10 @@ function countChild(data, MAX_BLOCK) {
 async function CHILD_E_D_METHOD(i, child) {
     let sizeOf = i * this.BLOCKS_FOR_CHILD * this.BITES_FROM_CHILD;
     let MAX_SIZE = this.BLOCKS_FOR_CHILD * this.BITES_FROM_CHILD + sizeOf;
+    if (MAX_SIZE > this.data.length)
+        MAX_SIZE = this.data.length;
     let END_OF_DATA = this.BITES_FROM_CHILD + 0;
-    let MAX_ITER = this.BITES_FROM_CHILD;
-    for (let j = 0; j < MAX_ITER; j++) {
+    for (let j = 0; j < this.BLOCKS_FOR_CHILD; j++) {
         if ((END_OF_DATA + sizeOf) > MAX_SIZE)
             END_OF_DATA = MAX_SIZE - sizeOf;
         await new Promise((res, rej) => {
@@ -221,24 +223,27 @@ async function CHILD_E_D_METHOD(i, child) {
     return this.data;
 }
 function SEARCHER_BITES_FROM_CHILD(size, BITES_FROM_CHILD) {
-    if (!!BITES_FROM_CHILD && BITES_FROM_CHILD > 0)
-        return Math.ceil(BITES_FROM_CHILD);
-    let i = 1;
+    if (!!BITES_FROM_CHILD && BITES_FROM_CHILD > 0) {
+        let n = Math.ceil(BITES_FROM_CHILD);
+        return n % 16 + n;
+    }
+    let i = 0;
     for (; i < 2; i++)
         if (Math.floor(size / ((1024 ** i))) === 0)
             break;
-    if (i <= 1)
+    if (!i)
         return 16;
-    return 16 * (1024 ** (i - 1));
+    return 1024 * 0.5;
 }
 /**Многопоточное шифрование по методу Кузнечик */
 const encryptChilds = async (data, masterkey, childs, BITES_FROM_CHILD = 0) => {
     if (data.length > 2147483647)
         console.warn("encryptChilds не был расчитан на данные более 2 гб");
-    const MAX_BLOCK = Math.ceil(data.length / 16);
+    if (!!(data.length % 16))
+        data = Buffer.concat([Buffer.from(Array.from({ length: 16 - data.length % 16 }).map(x => 0)), data]);
     const C_BITES_FROM_CHILD = SEARCHER_BITES_FROM_CHILD(data.length, BITES_FROM_CHILD);
     const CHILD_MAX = countChild(childs, Math.ceil(data.length / C_BITES_FROM_CHILD));
-    const BLOCKS_FOR_CHILD = Math.ceil(MAX_BLOCK / CHILD_MAX);
+    const BLOCKS_FOR_CHILD = Math.ceil((data.length / C_BITES_FROM_CHILD) / CHILD_MAX);
     const MASTER_KEY_BUFF = toBuffer(masterkey);
     const CHILD_PATH = (0, path_1.join)(__dirname, 'child.cjs');
     const CHILDS = Array.from({ length: CHILD_MAX }).map(x => (0, child_process_1.fork)(CHILD_PATH));
@@ -272,11 +277,10 @@ const decryptChilds = async (data, masterkey, childs, BITES_FROM_CHILD = 0, trim
     if (data.length > 2147483647)
         console.warn("decryptChilds не был расчитан на данные более 2 гб");
     if (!!(data.length % 16))
-        data = Buffer.concat([Buffer.from(Array.from({ length: 16 - data.length % 16 }).map(x => 0)), data]);
-    const MAX_BLOCK = Math.ceil(data.length / 16);
+        throw "Не кратно 16 байтам";
     const C_BITES_FROM_CHILD = SEARCHER_BITES_FROM_CHILD(data.length, BITES_FROM_CHILD);
     const CHILD_MAX = countChild(childs, Math.ceil(data.length / C_BITES_FROM_CHILD));
-    const BLOCKS_FOR_CHILD = Math.ceil(MAX_BLOCK / CHILD_MAX);
+    const BLOCKS_FOR_CHILD = Math.ceil((data.length / C_BITES_FROM_CHILD) / CHILD_MAX);
     const MASTER_KEY_BUFF = toBuffer(masterkey);
     const CHILD_PATH = (0, path_1.join)(__dirname, 'child.cjs');
     const CHILDS = Array.from({ length: CHILD_MAX }).map(x => (0, child_process_1.fork)(CHILD_PATH));
@@ -308,10 +312,8 @@ const decryptChilds = async (data, masterkey, childs, BITES_FROM_CHILD = 0, trim
 };
 exports.decryptChilds = decryptChilds;
 /**Асинхронное шифрование по методу Кузнечик */
-const encryptAsync = async (data, masterkey) => {
-    let keys = (0, exports.EXPAND_KEYS)(toBuffer(masterkey));
-    let ret = [];
-    let block = [];
+async function encryptAsync(data, masterkey) {
+    let keys = this?.EXPAND_KEYS || (0, exports.EXPAND_KEYS)(toBuffer(masterkey));
     if (!!(data.length % 16))
         data = Buffer.concat([Buffer.from(Array.from({ length: 16 - data.length % 16 }).map(x => 0)), data]);
     let MAX_ITER = data.length / 16;
@@ -322,13 +324,13 @@ const encryptAsync = async (data, masterkey) => {
         }));
     }
     return Buffer.concat(await Promise.all(ArrPromise));
-};
-exports.encryptAsync = encryptAsync;
+}
 /**Асинхронное дешифрование по методу Кузнечик */
-const decryptAsync = async (data, masterkey, trimStart = true) => {
-    let keys = (0, exports.EXPAND_KEYS)(toBuffer(masterkey));
-    let ret = [];
-    let block = [];
+async function decryptAsync(data, masterkey, trimStart = true) {
+    let trs = trimStart;
+    if (this?.trimStart !== undefined)
+        trs = this?.trimStart;
+    let keys = this?.EXPAND_KEYS || (0, exports.EXPAND_KEYS)(toBuffer(masterkey));
     if (!!(data.length % 16))
         data = Buffer.concat([Buffer.from(Array.from({ length: 16 - data.length % 16 }).map(x => 0)), data]);
     let MAX_ITER = data.length / 16;
@@ -338,9 +340,8 @@ const decryptAsync = async (data, masterkey, trimStart = true) => {
             resolve(REV_ROUNDS_10(Buffer.from(data.subarray(i * 16, (i + 1) * 16)), keys));
         }));
     }
-    return trimStart ? (0, exports.FN_TRIM_START)(Buffer.concat(await Promise.all(ArrPromise))) : Buffer.concat(await Promise.all(ArrPromise));
-};
-exports.decryptAsync = decryptAsync;
+    return trs ? (0, exports.FN_TRIM_START)(Buffer.concat(await Promise.all(ArrPromise))) : Buffer.concat(await Promise.all(ArrPromise));
+}
 /**Синхронное шифрование по методу Кузнечик */
 const encryptSync = (data, masterkey) => {
     let keys = (0, exports.EXPAND_KEYS)(toBuffer(masterkey));

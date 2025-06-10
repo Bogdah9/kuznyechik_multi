@@ -9,14 +9,18 @@ const BUFF_TO_TEXT = (a) => "[ " + Array.from(a).map(NUM_TO_HEX).join(' ') + " ]
         return;
     }
     process.send({ message: "I_LIVE" });
+    let cb = undefined;
     process.on('message', (data) => {
-        switch (data.type) {
-            case "encrypt":
-                (0, functions_cjs_1.encryptAsync)(Buffer.from(data.data), Buffer.from(data.masterkey)).then(x => process.send(x));
-                break;
-            case "decrypt":
-                (0, functions_cjs_1.decryptAsync)(Buffer.from(data.data), Buffer.from(data.masterkey), false).then(x => process.send(x));
-                break;
+        if (!cb) {
+            switch (data.type) {
+                case "encrypt":
+                    cb = functions_cjs_1.encryptAsync.bind({ EXPAND_KEYS: (0, functions_cjs_1.EXPAND_KEYS)(Buffer.from(data.masterkey)) });
+                    break;
+                case "decrypt":
+                    cb = functions_cjs_1.decryptAsync.bind({ trimStart: false, EXPAND_KEYS: (0, functions_cjs_1.EXPAND_KEYS)(Buffer.from(data.masterkey)) });
+                    break;
+            }
         }
+        cb(Buffer.from(data.data)).then(x => process.send(x));
     });
 })();

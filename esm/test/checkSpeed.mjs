@@ -14,19 +14,20 @@ const speed = (length, time) => {
 };
 /**
  * Функция проверки скорости шифрования размер псевдослучайных данных указывать в МБайтах
- * @param size размер псевдослучайных данных в МБайтах (до 2 ГБайт = 2048) указав 0 будет 2ГБайта
+ * @param size размер псевдослучайных данных в МБайтах (до 2 ГБайт = 2048) указав 0 будет колличество ядер*2 в МБайтах
  */
-export default async (size = 512) => {
+export default async (size = 0) => {
+    let cp = cpus();
+    let childs = cpus().length;
     let rb = size;
-    if (size === 0)
-        rb = 2 ** 31 - 1;
+    if (size === 0) {
+        rb = childs * 1024 * 1024 * 2;
+    }
     else
         rb *= 1024 * 1024;
     let data = randomBytes(rb);
     let key = randomBytes(32).toString("hex");
     let start = +new Date();
-    let cp = cpus();
-    let childs = cpus().length;
     console.log("Многопоточное шифрование/дешифрование (nodejs only), размер данных " + (data.length / (1024 * 1024)).toFixed(3) + " Мбайта ");
     console.log("Процессор                     : " + cp[0].model);
     console.log("Колличесво дочерник процессов : " + childs);

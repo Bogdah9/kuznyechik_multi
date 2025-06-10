@@ -41,8 +41,10 @@ export declare const EXPAND_KEYS: (masterkey: Buffer) => Buffer[];
 export declare function ROUNDS_10(block: Array<number> | Buffer, keys: Buffer[]): Buffer<ArrayBufferLike>;
 export declare function REV_ROUNDS_10(block: Array<number> | Buffer, keys: Buffer[]): Buffer<ArrayBufferLike>;
 export declare const encryptSync: (data: Buffer, masterkey: string | Buffer) => Buffer;
-export declare const encryptAsync: (data: Buffer, masterkey: string | Buffer) => Promise<Buffer>;
-export declare const decryptAsync: (data: Buffer, masterkey: string | Buffer, trimStart?: boolean) => Promise<Buffer>;
+/**Асинхронное шифрование по методу Кузнечик */
+export declare function encryptAsync(data: Buffer, masterkey: string | Buffer): Promise<Buffer>;
+/**Асинхронное дешифрование по методу Кузнечик */
+export declare function decryptAsync(data: Buffer, masterkey: string | Buffer, trimStart?: boolean): Promise<Buffer>;
 export declare const decryptSync: (data: Buffer, masterkey: string | Buffer, trimStart?: boolean) => Buffer;
 /**Многопоточное шифрование по методу Кузнечик */
 export declare const encryptChilds: (data: Buffer, masterkey: string | Buffer, childs: number | "all", BITES_FROM_CHILD?: number) => Promise<Buffer>;

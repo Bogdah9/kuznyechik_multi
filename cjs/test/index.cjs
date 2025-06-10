@@ -19,15 +19,15 @@ const TEXT = (() => {
         return acc;
     }, { str: '', i: 0 }).str;
 })();
-exports.default = async (msg = TEXT, size = 512) => {
+exports.default = async (msg = TEXT, size = 0) => {
     const KEY_TRUE = (0, node_crypto_1.randomBytes)(32).toString("hex");
     let data = Buffer.from(msg, 'utf8');
-    console.log("\tПример работоспособности шифра (браузерная версия) асинхронно: ");
-    console.log("\t Ключ 32 байта (HEX): " + KEY_TRUE);
-    console.log("\t Исходный текст(HEX)    : " + data.toString('hex').toUpperCase() + '');
+    console.log("Пример работоспособности шифра: ");
+    console.log("\t Ключ 32 байта (HEX)    : " + KEY_TRUE);
+    console.log("\t Исходный текст(HEX)    : " + data.toString('hex') + '');
     let eBuff = await (0, functions_cjs_1.encryptAsync)(data, KEY_TRUE);
-    console.log("\t Шифротекст(HEX)    : ", eBuff.reduce((acc, x) => acc + x.toString(16), '').toUpperCase() + '');
-    console.log("\t\tРасшифрованный(UTF-8)    : ");
+    console.log("\t Шифротекст(HEX)        : " + eBuff.reduce((acc, x) => acc + x.toString(16), '') + '');
+    console.log("\tРасшифрованный(UTF-8)   : ");
     console.log(new TextDecoder().decode(await (0, functions_cjs_1.decryptAsync)(eBuff, KEY_TRUE)) + '\n\n');
     await (0, checkSpeed_cjs_1.default)(size);
 };
