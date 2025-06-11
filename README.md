@@ -3,6 +3,11 @@
 Шифрование ГОСТ 34.12-2018 Кузнечик. </br>
 Поддержка ESM/CommonJS/ChildProcess/browser</br>
 Без внешних зависимостей</br>
+```sh
+npm i kuznyechik_multi
+yarn add kuznyechik_multi
+```
+
 ## Тест на производительность
 ```typescript
 import test from 'kuznyechik_multi/test'
