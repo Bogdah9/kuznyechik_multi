@@ -1,9 +1,9 @@
 # kuznyechik_multi
 
-Шифрование ГОСТ 34.12-2018 Кузнечик. </br>
-Поддержка ESM/CommonJS/ChildProcess/browser</br>
-Без внешних зависимостей</br>
-[English](./README.eng.md)</br>
+English Encryption GOST 34.12-2018 Grasshopper. </br>
+ESM/CommonJS/ChildProcess/browser support</br>
+Without external dependencies</br>
+[Russian](./README.md)</br>
 [GitHub](https://github.com/Bogdah9/kuznyechik_multi)
 [GitVerse](https://gitverse.ru/bogdah9/kuznyechik_multi)
 [npm](https://www.npmjs.com/package/kuznyechik_multi)
@@ -15,7 +15,7 @@ npm i kuznyechik_multi
 yarn add kuznyechik_multi
 ```
 
-## Тест на производительность
+## Performance test
 ```typescript
 import test from 'kuznyechik_multi/test'
 const {default:test} = require('kuznyechik_multi/test')
@@ -53,10 +53,10 @@ await test()
     Проверка на равенство исходных данных и шифрованных   :  false
     Проверка на равенство исходных данных и дешифрованных :  true
 ```
-## Браузерная версия kuznyechik_multi/browser
-    Взамен Buffer используется Uint8Array. ECMAScript only
-    Браузерная версия находится в едином модуле по пути ./node_modules/kuznyechik_multi/browser/index.min.js
-    Типы браузерной версии                              ./node_modules/kuznyechik_multi/browser/index.min.d.ts
+## Browser version of kuznyechik_multi/browser
+    Instead of Buffer, Uint8Array is used. ECMAScript only
+    The browser version is located in a single module along the path ./node_modules/kuznyechik_multi/browser/index.min.js
+    Browser version types ./node_modules/kuznyechik_multi/browser/index.min.d.ts
 ```typescript
 declare const _default: {
     async: {
@@ -70,14 +70,14 @@ declare const _default: {
 };
 export default _default;
 ```
-## Импроты по умолчанию 
+## Default Sprats
 ```typescript
 import {async,sync,multithreading} from 'kuznyechik_multi';
 import kuznyechik_multi from 'kuznyechik_multi';
 const {async,sync,multithreading} = require("kuznyechik_multi");
 const kuznyechik_multi = require("kuznyechik_multi");
 ```
-## Импроты асинхронного кода и реализация 
+## Asynchronous code sprats and implementation
 ```typescript
 import { randomBytes } from "node:crypto";
 const {randomBytes} = require("crypto")
@@ -87,15 +87,15 @@ import {encrypt,decryp} from 'kuznyechik_multi/async';
 import kuznyechik_async from 'kuznyechik_multi/async';
 const {encrypt,decrypt} = require("kuznyechik_multi/async")
 const kuznyechik_async = require("kuznyechik_multi/async");
-//Ключ, 32 байта - всегда
+//The key, 32 bytes, is always
 let key = randomBytes(32)
-//Исходное сообщение
+//The original message
 let message  = Buffer.from("Привет мир",'utf8')
-//Шифрованное сообщение
+//Encrypted message
 let ebuff = await encrypt(message,key)
-//Расшифрованное сообщение
+//The decrypted message
 let dbuff = await decrypt(ebuff,key)
-//Расшифрованное сообщение, заведомо ложным ключем
+//A decoded message, obviously with a false key
 let dbuffErrore = await decrypt(ebuff,randomBytes(32))
 console.log("\tКлюч 32 байта (HEX)                   : "+key.toString('hex'))
 console.log("\tИсходный текст                        : "+message.toString('utf8'))
@@ -109,7 +109,7 @@ console.log("\tРасшифрованный(UTF-8) ложным ключем   :
     Расшифрованный(UTF-8)                 : Привет мир
     Расшифрованный(UTF-8) ложным ключем   : ֳ¶���   DfEs§��p-↓[9☼��s↕6�3#.J
 
-## Импроты синхронного кода и реализация 
+## Synchronous code sprats and implementation 
 ```typescript
 import { randomBytes } from "node:crypto";
 const {randomBytes} = require("crypto")
@@ -119,15 +119,15 @@ import {encrypt,decryp} from 'kuznyechik_multi/sync';
 import kuznyechik_sync from 'kuznyechik_multi/sync';
 const {encrypt,decrypt} = require("kuznyechik_multi/sync")
 const kuznyechik_sync = require("kuznyechik_multi/sync");
-//Ключ, 32 байта - всегда
+//The key, 32 bytes, is always
 let key = randomBytes(32)
-//Исходное сообщение
+//The original message
 let message  = Buffer.from("Привет мир",'utf8')
-//Шифрованное сообщение
+//Encrypted message
 let ebuff = encrypt(message,key)
-//Расшифрованное сообщение
+//The decrypted message
 let dbuff = decrypt(ebuff,key)
-//Расшифрованное сообщение, заведомо ложным ключем
+//A decoded message, obviously with a false key
 let dbuffErrore = decrypt(ebuff,randomBytes(32))
 console.log("\tКлюч 32 байта (HEX)                   : "+key.toString('hex'))
 console.log("\tИсходный текст                        : "+message.toString('utf8'))
@@ -141,7 +141,7 @@ console.log("\tРасшифрованный(UTF-8) ложным ключем   :
     Расшифрованный(UTF-8)                 : Привет мир
     Расшифрованный(UTF-8) ложным ключем   : ♀�p��f��g��♥a�$�♥�T��yQ!��g�ϧ
 
-## Импроты многопоточного кода и реализация 
+## Multithreaded code snippets and implementation
 ```typescript
 import { randomBytes } from "node:crypto";
 const {randomBytes} = require("crypto")
@@ -169,19 +169,19 @@ const MSG = `
 И ловит кошка рыжая
 Веселых белых мух.
 `
-//Ключ, 32 байта - всегда
+//The key, 32 bytes, is always
 let key = randomBytes(32)
-//Колличество байтов number опционально, которые будут переданны каждому ребенку на каждую интерацию шифрования/рфсшифрования - по умолчанию он сам высчитает оптимальное колличество
+//The number of bytes is optional, which will be transferred to each child for each encryption/rf decryption interation - by default, he will calculate the optimal number himself.
 const bites_fromChild = undefined
-//Колличество дочерних процессов number опционально, по умолчанию all - максимальное колличество
+//The number of child processes is optional; by default, all is the maximum number.
 const childs = 'all'
-//Исходное сообщение, ограничение в максимальное колличество Buffer ~ 2 гигабайта
+//The original message, the maximum Buffer limit is ~2 gigabytes
 let message  = Buffer.from(MSG,'utf8')
-//Шифрованное, исходное сообщение будет перезаписанно!
+//Encrypted, the original message will be overwritten!
 let ebuff = await encrypt(Buffer.from(message),key,childs)
-//Расшифрованное сообщение, исходное сообщение будет перезаписанно!
+//Decrypted message, the original message will be overwritten!
 let dbuff = await decrypt(Buffer.from(ebuff),key,childs)
-//Расшифрованное сообщение, заведомо ложным ключем, исходное сообщение будет перезаписанно!
+//Decrypted message with a deliberately false key, the original message will be overwritten!
 let dbuffErrore = await decrypt(Buffer.from(ebuff),randomBytes(32),childs)
 console.log(message.length)
 console.log("\tКлюч 32 байта (HEX)                   : "+key.toString('hex'))
